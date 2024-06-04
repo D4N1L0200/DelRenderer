@@ -1,0 +1,13 @@
+{
+  "file_paths": {
+    "objects": "objects"
+  },
+  "camera": {
+    "near_plane": 0.1,
+    "far_plane": 20,
+    "depth_scaling": 200,
+    "speed_3d": 0.1,
+    "speed_2d": 2,
+    "sens": 0.02
+  }
+}
