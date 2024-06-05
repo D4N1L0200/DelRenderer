@@ -1,5 +1,6 @@
 import time
 import pygame
+import numpy
 
 
 class SetupOptions:
@@ -40,7 +41,8 @@ class RendererBase:
         )
 
         pygame.mouse.set_visible(False)
-        self._mouse_locked: bool = True
+        self._middle_clicked: bool = False
+        self._last_mouse_pos: numpy.ndarray | None = None
 
         self._clock: pygame.time.Clock = pygame.time.Clock()
 
@@ -53,16 +55,18 @@ class RendererBase:
             "debug": pygame.font.SysFont("monospace", 28),
         }
 
+    def _resize(self, width: int, height: int) -> None:
+        self._win_width = width
+        self._win_height = height
+
     def _poll_events(self) -> bool:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
             elif event.type == pygame.VIDEORESIZE:
-                self._win_width = event.w
-                self._win_height = event.h
+                self._resize(event.w, event.h)
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    self._mouse_locked = not self._mouse_locked
                     pygame.mouse.get_rel()
                 elif event.key == pygame.K_F1:
                     self._toggle_debug()
@@ -70,42 +74,30 @@ class RendererBase:
                     self.key_pressed(
                         event.key, event.mod, event.unicode, event.scancode
                     )
-            elif event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == pygame.MOUSEBUTTONDOWN:                    
                 self.mouse_pressed(event.pos, event.button)
+            elif event.type == pygame.MOUSEBUTTONUP:
+                self.mouse_released(event.pos, event.button)
 
         return True
 
     def key_pressed(self, key: int, mod: int, unicode: str, scancode: int) -> None: ...
     def mouse_pressed(self, pos: tuple[int, int], button: int) -> None: ...
+    def mouse_released(self, pos: tuple[int, int], button: int) -> None: ...
     def _toggle_debug(self) -> None: ...
     def update(self, dt: float) -> None: ...
-
-    def _update(self, dt: float) -> None:
-        if self._mouse_locked:
-            pygame.mouse.set_pos(self._win_width // 2, self._win_height // 2)
-
-        self.update(dt)
-
     def create_object(self, obj_name: str, pos: tuple) -> None: ...
     def _delete_object(self, idx: int) -> None: ...
     def _render_objects(self) -> None: ...
     def draw_ui(self) -> None: ...
 
     def _draw_ui(self) -> None:
-        if self._mouse_locked:
-            pygame.draw.circle(
-                self._window,
-                (255, 255, 255),
-                (self._win_width / 2, self._win_height / 2),
-                2,
-            )
-        else:
-            pygame.draw.circle(
-                self._window,
-                (255, 255, 255),
-                pygame.mouse.get_pos(),
-                2,
-            )
+        pygame.draw.circle(
+            self._window,
+            (255, 255, 255),
+            pygame.mouse.get_pos(),
+            2,
+        )
 
         self.draw_ui()
 
@@ -125,7 +117,7 @@ class RendererBase:
             deltatime = current_time - previous_time
 
             running = self._poll_events()
-            self._update(deltatime)
+            self.update(deltatime)
             self._draw()
             self._clock.tick(60)
 
