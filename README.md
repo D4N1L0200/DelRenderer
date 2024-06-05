@@ -48,6 +48,9 @@ DelRenderer is a 3D renderer designed to provide basic functionalities for 3D re
    
 ## Usage
 
+### NOTE:
+The current version has the 3d mode hidden, you can only use the 2d mode. Middle mouse button to move, Left mouse to spawn a square, F1 for the debug menu and F2 to spawn 100 squares randomly in the view.
+
 DelRenderer provides a simple 3D renderer with movement.
 You can enable the debug menu by pressing F1.
 
