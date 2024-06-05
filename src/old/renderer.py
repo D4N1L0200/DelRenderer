@@ -1,7 +1,7 @@
 import pygame
 import numpy as np
 from typing import Union
-from utils import Camera
+from utils import Camera, RenderMode
 from objects import ObjectTemplate, Object
 import math
 import json
@@ -10,7 +10,7 @@ import os
 
 class Renderer:
     def __init__(
-        self, size: tuple[int, int] = (0, 0), mode: str = "3DWireframe"
+        self, size: tuple[int, int] = (0, 0), mode: int = RenderMode.R3D
     ) -> None:
         flags: int = (
             pygame.FULLSCREEN if tuple == (0, 0) else pygame.RESIZABLE
@@ -35,22 +35,11 @@ class Renderer:
             "default": pygame.font.Font(None, 24),
             "debug": pygame.font.SysFont("monospace", 28),
         }
-        self.mode: str = mode
+        self.mode: int = mode
         self.object_templates: dict[str, ObjectTemplate] = {}
         self.objects: list[Object] = []
 
-    def load_settings(self) -> None:
-        with open("settings.json", "r") as file:
-            settings = json.load(file)
 
-            self.settings = settings
-
-            self.camera.near_plane = settings["camera"]["near_plane"]
-            self.camera.far_plane = settings["camera"]["far_plane"]
-            self.camera.depth_scaling = settings["camera"]["depth_scaling"]
-            self.camera.speed_2d = settings["camera"]["speed_2d"]
-            self.camera.speed_3d = settings["camera"]["speed_3d"]
-            self.camera.sens = settings["camera"]["sens"]
 
     def load_obj_templates(self) -> None:
         objects_path: str = self.settings["file_paths"]["objects"]
@@ -70,7 +59,7 @@ class Renderer:
         self, keys: pygame.key.ScancodeWrapper, mouse_rel: tuple[int, int]
     ) -> None:
         match self.mode:
-            case "3DWireframe":
+            case RenderMode.R3DW:
                 delta_x = self.camera.speed_3d * (
                     keys[pygame.K_w] - keys[pygame.K_s]
                 ) * math.sin(self.camera.rot.yaw) - self.camera.speed_3d * (
@@ -97,7 +86,7 @@ class Renderer:
                 self.camera.rot.yaw += mouse_dx * self.camera.sens
                 self.camera.rot.pitch -= mouse_dy * self.camera.sens
                 self.camera.rot = round(self.camera.rot, 4)
-            case "2D":
+            case RenderMode.R2D:
                 cam_speed = self.camera.speed_2d + (keys[pygame.K_LSHIFT] * 4)
                 delta_x = cam_speed * (keys[pygame.K_d] - keys[pygame.K_a])
                 delta_y = cam_speed * (keys[pygame.K_w] - keys[pygame.K_s])
@@ -300,9 +289,9 @@ class Renderer:
             # self.render_object("cube", np.array([2, 0, 0]))
 
             match self.mode:
-                case "3DWireframe":
+                case RenderMode.R3DW:
                     self.render_objects_3d()
-                case "2D":
+                case RenderMode.R2D:
                     self.render_objects_2d()
 
             if self.debug_mode:

@@ -43,7 +43,7 @@ DelRenderer is a 3D renderer designed to provide basic functionalities for 3D re
     ```
 4. Run the terminal emulator:
     ```bash
-    python main.py
+    python src/main.py
     ```
    
 ## Usage

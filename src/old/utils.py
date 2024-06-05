@@ -93,3 +93,9 @@ class Camera:
         self.speed_3d: float = 0.1
         self.speed_2d: float = 2
         self.sens: float = 0.02
+
+
+class RenderMode:
+    R3D: int = 0b1
+    R2D: int = 0b10
+    R3DW: int = 0b100

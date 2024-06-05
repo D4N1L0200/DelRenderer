@@ -1,6 +1,6 @@
 {
   "file_paths": {
-    "objects": "objects"
+    "objects": "src/objects"
   },
   "camera": {
     "near_plane": 0.1,

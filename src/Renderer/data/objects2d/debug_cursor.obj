@@ -1,0 +1,51 @@
+{
+    "name": "debug_cursor",
+    "vertices": [
+        [
+            0,
+            0
+        ],
+        [
+            1,
+            0
+        ],
+        [
+            0,
+            1
+        ]
+    ],
+    "edges": [
+        [
+            0,
+            1
+        ],
+        [
+            0,
+            2
+        ]
+    ],
+    "colors": {
+        "red": [
+            255,
+            0,
+            0
+        ],
+        "blue": [
+            0,
+            0,
+            255
+        ]
+    },
+    "render": [
+        {
+            "type": "line",
+            "pos": 0,
+            "color": "red"
+        },
+        {
+            "type": "line",
+            "pos": 1,
+            "color": "blue"
+        }
+    ]
+}

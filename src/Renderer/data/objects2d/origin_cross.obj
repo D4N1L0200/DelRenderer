@@ -1,0 +1,71 @@
+{
+    "name": "origin_cross",
+    "vertices": [
+        [
+            0,
+            0
+        ],
+        [
+            1,
+            0
+        ],
+        [
+            0,
+            1
+        ]
+    ],
+    "edges": [
+        [
+            0,
+            1
+        ],
+        [
+            0,
+            2
+        ]
+    ],
+    "colors": {
+        "white": [
+            255,
+            255,
+            255
+        ],
+        "red": [
+            255,
+            0,
+            0
+        ],
+        "blue": [
+            0,
+            0,
+            255
+        ]
+    },
+    "render": [
+        {
+            "type": "point",
+            "pos": 0,
+            "color": "white"
+        },
+        {
+            "type": "point",
+            "pos": 1,
+            "color": "red"
+        },
+        {
+            "type": "line",
+            "pos": 0,
+            "color": "red"
+        },
+        {
+            "type": "point",
+            "pos": 2,
+            "color": "blue"
+        },
+        {
+            "type": "line",
+            "pos": 1,
+            "color": "blue"
+        }
+    ]
+}
