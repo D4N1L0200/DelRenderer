@@ -41,8 +41,9 @@ class RendererBase:
         )
 
         pygame.mouse.set_visible(False)
-        self._middle_clicked: bool = False
         self._last_mouse_pos: numpy.ndarray | None = None
+        self._middle_clicked: bool = False
+        self._shift_hold: bool = False
 
         self._clock: pygame.time.Clock = pygame.time.Clock()
 
@@ -74,7 +75,9 @@ class RendererBase:
                     self.key_pressed(
                         event.key, event.mod, event.unicode, event.scancode
                     )
-            elif event.type == pygame.MOUSEBUTTONDOWN:                    
+            elif event.type == pygame.KEYUP:
+                self.key_released(event.key, event.mod, event.unicode, event.scancode)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
                 self.mouse_pressed(event.pos, event.button)
             elif event.type == pygame.MOUSEBUTTONUP:
                 self.mouse_released(event.pos, event.button)
@@ -82,6 +85,7 @@ class RendererBase:
         return True
 
     def key_pressed(self, key: int, mod: int, unicode: str, scancode: int) -> None: ...
+    def key_released(self, key: int, mod: int, unicode: str, scancode: int) -> None: ...
     def mouse_pressed(self, pos: tuple[int, int], button: int) -> None: ...
     def mouse_released(self, pos: tuple[int, int], button: int) -> None: ...
     def _toggle_debug(self) -> None: ...

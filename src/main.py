@@ -8,7 +8,7 @@ class DelRend2D(Renderer2D):
         options: SetupOptions = SetupOptions()
         options.set_size((800, 600))
         options.enable_resizable()
-        options.set_title("DelRenderer")
+        options.set_title("DelRenderer 2D")
         super().__init__(options)
 
     def key_pressed(self, key: int, mod: int, unicode: str, scancode: int) -> None:
@@ -21,8 +21,29 @@ class DelRend2D(Renderer2D):
                 self.create_object("square", pos)
 
 
+class DelRend3D(Renderer3D):
+    def __init__(self) -> None:
+        options: SetupOptions = SetupOptions()
+        options.set_size((800, 600))
+        options.enable_resizable()
+        options.set_title("DelRenderer 3D")
+        super().__init__(options)
+
+    def key_pressed(self, key: int, mod: int, unicode: str, scancode: int) -> None:
+        super().key_pressed(key, mod, unicode, scancode)
+
+        if key == pg.K_F2:
+            for _ in range(100):
+                pos: tuple[float, float, float] = (
+                    self._camera.focus[0] + random() * 20 - 10,
+                    self._camera.focus[1] + random() * 20 - 10,
+                    self._camera.focus[2] + random() * 20 - 10,
+                )
+                self.create_object("cube", pos)
+
+
 def main() -> None:
-    renderer: DelRend2D = DelRend2D()
+    renderer: DelRend3D = DelRend3D()
     renderer.start()
 
 

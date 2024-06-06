@@ -6,26 +6,15 @@ DelRenderer is a simple 3D renderer implemented in Python.
 
 ## Table of Contents
 - [Introduction](#introduction)
-- [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [License](#license)
 
 ## Introduction
 
 DelRenderer is a 3D renderer designed to provide basic functionalities for 3D rendering. It is implemented in Python using standard libraries and pygame, making it easy to understand and extend.
-
-## Features:
-- Camera movement
-- Debug menu (F1)
-
-## Planned Features:
-- Add color support
-- UI for adding, editing and removing objects
-- Add grid system
-- Add preview for placing objects
-- Editable Gravity
 
 ## Installation
 
@@ -48,11 +37,14 @@ DelRenderer is a 3D renderer designed to provide basic functionalities for 3D re
    
 ## Usage
 
-### NOTE:
-The current version has the 3d mode hidden, you can only use the 2d mode. Middle mouse button to move, Left mouse to spawn a square, F1 for the debug menu and F2 to spawn 100 squares randomly in the view.
+### 2D Mode
+Middle mouse button to move, Left mouse to spawn a square, F1 for the debug menu and F2 to spawn 100 squares randomly in the view.
 
-DelRenderer provides a simple 3D renderer with movement.
-You can enable the debug menu by pressing F1.
+### 3D Mode
+Middle mouse button to rotate, Shift + Middle mouse button to move, Left mouse to spawn a cube, F1 for the debug menu and F2 to spawn 100 cubes randomly in the area.
+
+## Roadmap
+- To be done.
 
 ## Contributing
 

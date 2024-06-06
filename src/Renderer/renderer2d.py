@@ -103,7 +103,7 @@ class Renderer2D(RendererBase):
 
     def mouse_pressed(self, pos: tuple[int, int], button: int) -> None:
         if button == pygame.BUTTON_LEFT:
-            self.create_object("square", self._camera.pos)
+            self.create_object("square", self._camera.pos - (0.5, 0.5))
         elif button == pygame.BUTTON_MIDDLE:
             self._middle_clicked = True
         elif button == pygame.BUTTON_WHEELUP:
