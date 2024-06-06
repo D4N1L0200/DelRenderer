@@ -22,6 +22,7 @@ class Object3D:
         self.pos: numpy.ndarray = numpy.array([0.0, 0.0, 0.0])
         self.vertices: list[numpy.ndarray] = []
         self.edges: list[numpy.ndarray] = []
+        self.faces: list[numpy.ndarray] = []
         self.colors: dict[str, pygame.Color] = {}
         self.items: list[dict] = []
         # self.bounds: numpy.ndarray = numpy.array([0.0, 0.0, 0.0, 0.0], dtype=float)
@@ -60,6 +61,9 @@ class Object3DTemplate:
         self.edges: list[numpy.ndarray] = [
             numpy.array(edge) for edge in obj_params["edges"]
         ]
+        self.faces: list[numpy.ndarray] = [
+            numpy.array(face) for face in obj_params["faces"]
+        ]
 
         self.colors: dict[str, pygame.Color] = {}
         for color, rgb in obj_params["colors"].items():
@@ -75,6 +79,7 @@ class Object3DTemplate:
         obj.pos = pos
         obj.vertices = self.vertices
         obj.edges = self.edges
+        obj.faces = self.faces
         obj.colors = self.colors
         obj.items = self.items
         return obj
@@ -119,6 +124,9 @@ class Renderer3D(RendererBase):
             self._camera.rot = numpy.array([0.0, -numpy.pi / 2])
         elif key == pygame.K_KP_7:
             self._camera.rot = numpy.array([-numpy.pi / 2, 0.0])
+        elif key == pygame.K_KP_5:
+            self._camera.focus = numpy.array([1.0, 0.0, 0.0])
+            self._camera.rot = numpy.array([-numpy.pi / 4, -numpy.pi / 4 * 3])
 
     def key_released(self, key: int, mod: int, unicode: str, scancode: int) -> None:
         if key == pygame.K_LSHIFT:
@@ -175,15 +183,17 @@ class Renderer3D(RendererBase):
                     ) * d_offset
 
                     pitch = -self._camera.rot[0]
-                    rotation_matrix_pitch = numpy.array(
-                        [
-                            [1, 0, 0],
-                            [0, numpy.cos(pitch), -numpy.sin(pitch)],
-                            [0, numpy.sin(pitch), numpy.cos(pitch)],
-                        ]
-                    )
-
                     yaw = self._camera.rot[1]
+                    # roll = 0
+
+                    # rotation_matrix_roll = numpy.array(
+                    #     [
+                    #         [numpy.cos(roll), -numpy.sin(roll), 0],
+                    #         [numpy.sin(roll), numpy.cos(roll), 0],
+                    #         [0, 0, 1],
+                    #     ]
+                    # )
+
                     rotation_matrix_yaw = numpy.array(
                         [
                             [numpy.cos(yaw), 0, numpy.sin(yaw)],
@@ -192,11 +202,20 @@ class Renderer3D(RendererBase):
                         ]
                     )
 
+                    rotation_matrix_pitch = numpy.array(
+                        [
+                            [1, 0, 0],
+                            [0, numpy.cos(pitch), -numpy.sin(pitch)],
+                            [0, numpy.sin(pitch), numpy.cos(pitch)],
+                        ]
+                    )
+
                     rotation_matrix = numpy.dot(
-                        rotation_matrix_pitch, rotation_matrix_yaw
+                        rotation_matrix_yaw, rotation_matrix_pitch
                     )
 
                     offset_3d = numpy.array([offset[0], -offset[1], 0])
+
                     rotated_offset = numpy.dot(rotation_matrix, offset_3d)
 
                     self._camera.focus += rotated_offset

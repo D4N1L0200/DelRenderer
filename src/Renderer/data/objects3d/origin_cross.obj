@@ -1,29 +1,99 @@
 {
     "name": "origin_cross",
     "vertices": [
-        [0, 0, 0],
-        [1, 0, 0],
-        [0, 1, 0],
-        [0, 0, 1]
+        [
+            0,
+            0,
+            0
+        ],
+        [
+            1,
+            0,
+            0
+        ],
+        [
+            0,
+            1,
+            0
+        ],
+        [
+            0,
+            0,
+            1
+        ]
     ],
     "edges": [
-        [0, 1],
-        [0, 2],
-        [0, 3]
+        [
+            0,
+            1
+        ],
+        [
+            0,
+            2
+        ],
+        [
+            0,
+            3
+        ]
     ],
+    "faces": [],
     "colors": {
-        "white": [255, 255, 255],
-        "red": [255, 0, 0],
-        "green": [0, 255, 0],
-        "blue": [0, 0, 255]
+        "white": [
+            255,
+            255,
+            255
+        ],
+        "red": [
+            255,
+            0,
+            0
+        ],
+        "green": [
+            0,
+            255,
+            0
+        ],
+        "blue": [
+            0,
+            0,
+            255
+        ]
     },
     "render": [
-        {"type": "point", "pos": 0, "color": "white"},
-        {"type": "point", "pos": 1, "color": "red"},
-        {"type": "line", "pos": 0, "color": "red"},
-        {"type": "point", "pos": 2, "color": "green"},
-        {"type": "line", "pos": 1, "color": "green"},
-        {"type": "point", "pos": 3, "color": "blue"},
-        {"type": "line", "pos": 2, "color": "blue"}
+        {
+            "type": "point",
+            "pos": 0,
+            "color": "white"
+        },
+        {
+            "type": "point",
+            "pos": 1,
+            "color": "red"
+        },
+        {
+            "type": "line",
+            "pos": 0,
+            "color": "red"
+        },
+        {
+            "type": "point",
+            "pos": 2,
+            "color": "green"
+        },
+        {
+            "type": "line",
+            "pos": 1,
+            "color": "green"
+        },
+        {
+            "type": "point",
+            "pos": 3,
+            "color": "blue"
+        },
+        {
+            "type": "line",
+            "pos": 2,
+            "color": "blue"
+        }
     ]
 }
