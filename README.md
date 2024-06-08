@@ -44,10 +44,9 @@ Middle mouse button to move, Left mouse to spawn a square, F1 for the debug menu
 Middle mouse button to rotate, Shift + Middle mouse button to move, Left mouse to spawn a cube, F1 for the debug menu and F2 to spawn 100 cubes randomly in the area.
 
 ## Roadmap
-- To be done.
+The roadmap lists all done, on progress and to be done features. You can check it out here [ROADMAP.md](ROADMAP.md).
 
 ## Contributing
-
 Contributions to DelRenderer are welcome! You can contribute to the project by:
 
 - Reporting bugs or suggesting new features by creating an issue.

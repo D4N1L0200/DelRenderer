@@ -19,6 +19,7 @@ This document outlines the planned development milestones and tasks for the proj
 ## TODO: FIX ROADMAP
 ### v1.0 (TBD)
 
+- [ ] Convert to executable using Cython
 - [ ] Setup continuous integration (CI) pipeline
 - [ ] Implement advanced 2D rendering features (e.g., texture mapping, anti-aliasing)
 - [ ] Optimize memory usage
