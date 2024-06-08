@@ -184,15 +184,6 @@ class Renderer3D(RendererBase):
 
                     pitch = -self._camera.rot[0]
                     yaw = self._camera.rot[1]
-                    # roll = 0
-
-                    # rotation_matrix_roll = numpy.array(
-                    #     [
-                    #         [numpy.cos(roll), -numpy.sin(roll), 0],
-                    #         [numpy.sin(roll), numpy.cos(roll), 0],
-                    #         [0, 0, 1],
-                    #     ]
-                    # )
 
                     rotation_matrix_yaw = numpy.array(
                         [
@@ -215,7 +206,6 @@ class Renderer3D(RendererBase):
                     )
 
                     offset_3d = numpy.array([offset[0], -offset[1], 0])
-
                     rotated_offset = numpy.dot(rotation_matrix, offset_3d)
 
                     self._camera.focus += rotated_offset
