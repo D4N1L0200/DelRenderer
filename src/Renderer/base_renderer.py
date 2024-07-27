@@ -42,7 +42,7 @@ class RendererBase:
 
         pygame.mouse.set_visible(False)
         self._last_mouse_pos: numpy.ndarray | None = None
-        self._middle_clicked: bool = False
+        self._mouse_buttons: list[bool] = [False, False, False]
         self._shift_hold: bool = False
 
         self._clock: pygame.time.Clock = pygame.time.Clock()
@@ -78,16 +78,39 @@ class RendererBase:
             elif event.type == pygame.KEYUP:
                 self.key_released(event.key, event.mod, event.unicode, event.scancode)
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                self.mouse_pressed(event.pos, event.button)
+                self._mouse_pressed(event.pos, event.button)
             elif event.type == pygame.MOUSEBUTTONUP:
-                self.mouse_released(event.pos, event.button)
+                self._mouse_released(event.pos, event.button)
 
         return True
 
     def key_pressed(self, key: int, mod: int, unicode: str, scancode: int) -> None: ...
     def key_released(self, key: int, mod: int, unicode: str, scancode: int) -> None: ...
+
     def mouse_pressed(self, pos: tuple[int, int], button: int) -> None: ...
+
+    def _mouse_pressed(self, pos: tuple[int, int], button: int) -> None:
+        if button == pygame.BUTTON_LEFT:
+            self._mouse_buttons[0] = True
+        elif button == pygame.BUTTON_MIDDLE:
+            self._mouse_buttons[1] = True
+        elif button == pygame.BUTTON_RIGHT:
+            self._mouse_buttons[2] = True
+
+        self.mouse_pressed(pos, button)
+
     def mouse_released(self, pos: tuple[int, int], button: int) -> None: ...
+
+    def _mouse_released(self, pos: tuple[int, int], button: int) -> None:
+        if button == pygame.BUTTON_LEFT:
+            self._mouse_buttons[0] = False
+        elif button == pygame.BUTTON_MIDDLE:
+            self._mouse_buttons[1] = False
+        elif button == pygame.BUTTON_RIGHT:
+            self._mouse_buttons[2] = False
+
+        self.mouse_released(pos, button)
+
     def _toggle_debug(self) -> None: ...
     def update(self, dt: float) -> None: ...
     def create_object(self, obj_name: str, pos: tuple) -> None: ...
@@ -96,12 +119,28 @@ class RendererBase:
     def draw_ui(self) -> None: ...
 
     def _draw_ui(self) -> None:
-        pygame.draw.circle(
-            self._window,
-            (255, 255, 255),
-            pygame.mouse.get_pos(),
-            2,
-        )
+        color = [0, 0, 0]
+        if self._mouse_buttons[0]:
+            color[0] = 255
+        if self._mouse_buttons[1]:
+            color[1] = 255
+        if self._mouse_buttons[2]:
+            color[2] = 255
+            
+        if not any(color):
+            pygame.draw.circle(
+                self._window,
+                (255, 255, 255),
+                pygame.mouse.get_pos(),
+                4,
+            )
+        else:
+            pygame.draw.circle(
+                self._window,
+                color,
+                pygame.mouse.get_pos(),
+                3,
+            )
 
         self.draw_ui()
 

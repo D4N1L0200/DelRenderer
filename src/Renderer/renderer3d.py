@@ -135,8 +135,6 @@ class Renderer3D(RendererBase):
     def mouse_pressed(self, pos: tuple[int, int], button: int) -> None:
         if button == pygame.BUTTON_LEFT:
             self.create_object("cube", self._camera.focus - (0.5, 0.5, 0.5))
-        elif button == pygame.BUTTON_MIDDLE:
-            self._middle_clicked = True
         elif button == pygame.BUTTON_WHEELUP:
             self.zoom(self._camera.zoom_factor)
         elif button == pygame.BUTTON_WHEELDOWN:
@@ -144,7 +142,6 @@ class Renderer3D(RendererBase):
 
     def mouse_released(self, pos: tuple[int, int], button: int) -> None:
         if button == pygame.BUTTON_MIDDLE:
-            self._middle_clicked = False
             self._last_mouse_pos = None
 
     def zoom(self, scale: float) -> None:
@@ -172,7 +169,7 @@ class Renderer3D(RendererBase):
         self._objects.pop(idx)
 
     def update(self, dt: float) -> None:
-        if self._middle_clicked:
+        if self._mouse_buttons[1]:
             mouse_pos: numpy.ndarray = numpy.array(pygame.mouse.get_pos(), dtype=float)
             if self._last_mouse_pos is not None:
                 d_offset: float = dt * self._camera.sens
@@ -210,7 +207,7 @@ class Renderer3D(RendererBase):
 
                     self._camera.focus += rotated_offset
 
-                elif self._middle_clicked:
+                elif self._mouse_buttons[1]:
                     self._camera.rot[0] += (
                         self._last_mouse_pos[1] - mouse_pos[1]
                     ) * d_offset
