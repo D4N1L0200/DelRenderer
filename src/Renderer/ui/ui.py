@@ -3,25 +3,23 @@ from Renderer.ui.parser import Parser
 from Renderer.ui.content import Block, Button
 
 
-
-
 class UI:
     def __init__(self, screen_size: tuple[int, int]) -> None:
         self.path: str = "main.html"
         self.blocks: list[Block] = []
         self.screen_size: tuple[int, int] = screen_size
-        
-        self.reload()
-        self.update_screen_size(self.screen_size)
 
-    def update_screen_size(self, size: tuple[int, int]) -> None:
+        self.reload()
+
+    def update_blocks(self, size: tuple[int, int]) -> None:
         self.screen_size = size
-        
+
         for block in self.blocks:
             block.update_pos(self.screen_size)
-        
+
     def reload(self) -> None:
         self.blocks = Parser.parse(self.path)
+        self.update_blocks(self.screen_size)
 
     def get_buttons(self) -> list[Button]:
         return [button for block in self.blocks for button in block.get_buttons()]

@@ -63,7 +63,7 @@ class RendererBase:
     def _resize(self, width: int, height: int) -> None:
         self._win_width = width
         self._win_height = height
-        self.ui.update_screen_size((width, height))
+        self.ui.update_blocks((width, height))
 
     def _poll_events(self) -> bool:
         for event in pygame.event.get():
