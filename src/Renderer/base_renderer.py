@@ -2,6 +2,8 @@ import time
 import pygame
 import numpy
 
+from Renderer.ui import UI
+
 
 class SetupOptions:
     def __init__(self) -> None:
@@ -55,6 +57,8 @@ class RendererBase:
             "default": pygame.font.Font(None, 24),
             "debug": pygame.font.SysFont("monospace", 28),
         }
+        
+        self.ui: UI = UI()
 
     def _resize(self, width: int, height: int) -> None:
         self._win_width = width
@@ -90,26 +94,28 @@ class RendererBase:
     def mouse_pressed(self, pos: tuple[int, int], button: int) -> None: ...
 
     def _mouse_pressed(self, pos: tuple[int, int], button: int) -> None:
-        if button == pygame.BUTTON_LEFT:
-            self._mouse_buttons[0] = True
-        elif button == pygame.BUTTON_MIDDLE:
-            self._mouse_buttons[1] = True
-        elif button == pygame.BUTTON_RIGHT:
-            self._mouse_buttons[2] = True
+        if not self.ui.press(pos, button):
+            if button == pygame.BUTTON_LEFT:
+                self._mouse_buttons[0] = True
+            elif button == pygame.BUTTON_MIDDLE:
+                self._mouse_buttons[1] = True
+            elif button == pygame.BUTTON_RIGHT:
+                self._mouse_buttons[2] = True
 
-        self.mouse_pressed(pos, button)
+            self.mouse_pressed(pos, button)
 
     def mouse_released(self, pos: tuple[int, int], button: int) -> None: ...
 
     def _mouse_released(self, pos: tuple[int, int], button: int) -> None:
-        if button == pygame.BUTTON_LEFT:
-            self._mouse_buttons[0] = False
-        elif button == pygame.BUTTON_MIDDLE:
-            self._mouse_buttons[1] = False
-        elif button == pygame.BUTTON_RIGHT:
-            self._mouse_buttons[2] = False
+        if not self.ui.release(pos, button):
+            if button == pygame.BUTTON_LEFT:
+                self._mouse_buttons[0] = False
+            elif button == pygame.BUTTON_MIDDLE:
+                self._mouse_buttons[1] = False
+            elif button == pygame.BUTTON_RIGHT:
+                self._mouse_buttons[2] = False
 
-        self.mouse_released(pos, button)
+            self.mouse_released(pos, button)
 
     def _toggle_debug(self) -> None: ...
     def update(self, dt: float) -> None: ...
@@ -119,6 +125,8 @@ class RendererBase:
     def draw_ui(self) -> None: ...
 
     def _draw_ui(self) -> None:
+        self.ui.draw(self._window, self.fonts["default"])
+        
         color = [0, 0, 0]
         if self._mouse_buttons[0]:
             color[0] = 255
