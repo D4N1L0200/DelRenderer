@@ -2,7 +2,7 @@ import time
 import pygame
 import numpy
 
-from Renderer.ui import UI
+from Renderer.ui.ui import UI
 
 
 class SetupOptions:
@@ -57,12 +57,13 @@ class RendererBase:
             "default": pygame.font.Font(None, 24),
             "debug": pygame.font.SysFont("monospace", 28),
         }
-        
-        self.ui: UI = UI()
+
+        self.ui: UI = UI((self._win_width, self._win_height))
 
     def _resize(self, width: int, height: int) -> None:
         self._win_width = width
         self._win_height = height
+        self.ui.update_screen_size((width, height))
 
     def _poll_events(self) -> bool:
         for event in pygame.event.get():
@@ -126,7 +127,7 @@ class RendererBase:
 
     def _draw_ui(self) -> None:
         self.ui.draw(self._window, self.fonts["default"])
-        
+
         color = [0, 0, 0]
         if self._mouse_buttons[0]:
             color[0] = 255
@@ -134,7 +135,7 @@ class RendererBase:
             color[1] = 255
         if self._mouse_buttons[2]:
             color[2] = 255
-            
+
         if not any(color):
             pygame.draw.circle(
                 self._window,

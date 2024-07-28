@@ -40,6 +40,8 @@ class DelRend3D(Renderer3D):
                     self._camera.focus[2] + random() * 20 - 10,
                 )
                 self.create_object("cube", pos)
+        if key == pg.K_F5:
+            self.ui.reload()
 
 
 def main() -> None:
