@@ -6,31 +6,10 @@ from typing import Any
 class Parser:
     data_path: Path = Path.cwd() / "src" / "Renderer" / "data" / "ui"
 
-    default_block_css: dict = {
-        "position": (0, 0),
-        "size": (100, 100),
-        "direction": "horizontal",
-        "gap": 10,
-        "padding": 10,
-        "background-color": (255, 255, 255),
-        "border-color": (150, 150, 150),
-        "border-width": 4,
-        "border-radius": 5,
-    }
-
-    default_button_css: dict = {
-        "background-color": (0, 0, 0),
-        "color": (255, 255, 255),
-        "accent-color": (25, 25, 25),
-        "border-color": (175, 175, 175),
-        "border-width": 4,
-        "border-radius": 5,
-    }
-
     @staticmethod
     def merge_default(default: dict, override: dict) -> dict:
         merged: dict = default.copy()
-        
+
         for key, value in override.items():
             merged[key] = value
 
@@ -124,11 +103,12 @@ class Parser:
             except KeyError:
                 block_css = {}
 
-            block_css = Parser.merge_default(Parser.default_block_css, block_css)
+            block_css = Parser.merge_default(css["*block"], block_css)
 
             pos: tuple[int, int] = block_css["position"]
             size: tuple[int, int] = block_css["size"]
             direction: str = block_css["direction"]
+            anchor: str = block_css["offset-anchor"]
             gap: int = block_css["gap"]
             padding: int = block_css["padding"]
             background_color: tuple[int, int, int] = block_css["background-color"]
@@ -140,6 +120,7 @@ class Parser:
                 pos,
                 size,
                 direction,
+                anchor,
                 gap,
                 padding,
                 background_color,
@@ -154,7 +135,7 @@ class Parser:
                 except KeyError:
                     button_css = {}
 
-                button_css = Parser.merge_default(Parser.default_button_css, button_css)
+                button_css = Parser.merge_default(css["*button"], button_css)
 
                 background_color = button_css["background-color"]
                 text_color = button_css["color"]
@@ -181,52 +162,64 @@ class Parser:
         return list(blocks.values())
 
     @staticmethod
+    def parse_block(css_str: list[str], idx: int) -> tuple[dict, int]:
+        block: dict = {}
+
+        while ";" in css_str[idx]:
+            key, line = css_str[idx][:-1].split(":", 1)
+
+            block[key] = Parser.parse_css_value(line.strip())
+
+            idx += 1
+
+        while "}" not in css_str[idx]:
+            if css_str[idx].startswith("button") and "{" in css_str[idx]:
+                button_idx: str = css_str[idx].split(":nth(")[1].split(") {")[0].strip()
+
+                idx += 1
+
+                button: dict = {}
+
+                while ";" in css_str[idx]:
+                    key, line = css_str[idx][:-1].split(":", 1)
+
+                    button[key] = Parser.parse_css_value(line.strip())
+
+                    idx += 1
+
+                if "button" not in block:
+                    block["button"] = {}
+
+                block["button"][f":nth({button_idx})"] = button
+
+            idx += 1
+        return block, idx
+
+    @staticmethod
     def parse_css(path: str) -> dict:
         with open(Parser.data_path / path, "r") as file:
             css_str: list[str] = file.read().split("\n")
 
         css_str = [line.strip() for line in css_str if line != ""]
 
-        css: dict = {"block": {}}
+        css: dict = {"block": {}, "*block": {}, "*button": {}}
 
         idx: int = 0
         while idx < len(css_str):
-            if css_str[idx].startswith("block") and "{" in css_str[idx]:
+            if css_str[idx].startswith("*block") and "{" in css_str[idx]:
+                idx += 1
+
+                css["*block"], idx = Parser.parse_block(css_str, idx)
+            elif css_str[idx].startswith("*button") and "{" in css_str[idx]:
+                idx += 1
+
+                css["*button"], idx = Parser.parse_block(css_str, idx)
+            elif css_str[idx].startswith("block") and "{" in css_str[idx]:
                 block_id: str = css_str[idx].split("#")[1].split("{")[0].strip()
 
                 idx += 1
 
-                block: dict = {"button": {}}
-
-                while ";" in css_str[idx]:
-                    key, line = css_str[idx][:-1].split(":", 1)
-
-                    block[key] = Parser.parse_css_value(line.strip())
-
-                    idx += 1
-
-                while "}" not in css_str[idx]:
-                    if css_str[idx].startswith("button") and "{" in css_str[idx]:
-                        button_idx: str = (
-                            css_str[idx].split(":nth(")[1].split(") {")[0].strip()
-                        )
-
-                        idx += 1
-
-                        button: dict = {}
-
-                        while ";" in css_str[idx]:
-                            key, line = css_str[idx][:-1].split(":", 1)
-
-                            button[key] = Parser.parse_css_value(line.strip())
-
-                            idx += 1
-
-                        block["button"][f":nth({button_idx})"] = button
-
-                    idx += 1
-
-                css["block"][f"#{block_id}"] = block
+                css["block"][f"#{block_id}"], idx = Parser.parse_block(css_str, idx)
 
             idx += 1
 

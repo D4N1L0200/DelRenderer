@@ -52,6 +52,7 @@ class Block:
         rel_pos: tuple[int, int],
         size: tuple[int, int],
         direction: str,
+        anchor: str,
         gap: int,
         padding: int,
         color: tuple[int, int, int],
@@ -63,6 +64,7 @@ class Block:
         self.pos: tuple[int, int] = rel_pos
         self.button_size: tuple[int, int] = size
         self.direction: str = direction
+        self.anchor: str = anchor
         self.gap: int = gap
         self.padding: int = padding
         self.color: pygame.Color = pygame.Color(color)
@@ -75,13 +77,13 @@ class Block:
         size: tuple[int, int] = self.get_size()
         self.pos = (
             (
-                self.rel_pos[0] + screen_size[0] - size[0]
-                if self.rel_pos[0] < 0
+                screen_size[0] - self.rel_pos[0] - size[0]
+                if "right" in self.anchor
                 else self.rel_pos[0]
             ),
             (
-                self.rel_pos[1] + screen_size[1] - size[1]
-                if self.rel_pos[1] < 0
+                screen_size[1] - self.rel_pos[1] - size[1]
+                if "bottom" in self.anchor
                 else self.rel_pos[1]
             ),
         )
@@ -95,15 +97,13 @@ class Block:
         match self.direction:
             case "horizontal":
                 button.pos = (
-                    button.pos[0]
-                    + (self.gap + self.button_size[0]) * idx,
+                    button.pos[0] + (self.gap + self.button_size[0]) * idx,
                     button.pos[1],
                 )
             case "vertical":
                 button.pos = (
                     button.pos[0],
-                    button.pos[1]
-                    + (self.gap + self.button_size[1]) * idx,
+                    button.pos[1] + (self.gap + self.button_size[1]) * idx,
                 )
         return button
 
