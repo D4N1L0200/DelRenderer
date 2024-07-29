@@ -1,11 +1,9 @@
 from UI.content import Block, Button
-from pathlib import Path
 from typing import Any
+from pathlib import Path
 
 
 class Parser:
-    layout_path: Path = Path.cwd() / "src" / "UI" / "layout"
-
     @staticmethod
     def merge_default(default: dict, override: dict) -> dict:
         merged: dict = default.copy()
@@ -61,8 +59,8 @@ class Parser:
         return tags
 
     @staticmethod
-    def parse(path: str) -> dict[str, Block]:
-        with open(Parser.layout_path / path, "r") as file:
+    def parse(path: Path) -> dict[str, Block]:
+        with open(path / "main.html", "r") as file:
             html: str = file.read()
 
         html = html.replace("\n", "")
@@ -83,7 +81,7 @@ class Parser:
         if link["rel"] != "stylesheet":
             raise ValueError("Invalid HTML")
 
-        css: dict = Parser.parse_css(link["href"])
+        css: dict = Parser.parse_css(path / link["href"])
 
         block_tags: list[dict] = Parser.get_tags(body["content"], "block")
 
@@ -218,8 +216,8 @@ class Parser:
         return block, idx
 
     @staticmethod
-    def parse_css(path: str) -> dict:
-        with open(Parser.layout_path / path, "r") as file:
+    def parse_css(path: Path) -> dict:
+        with open(path, "r") as file:
             css_str: list[str] = file.read().split("\n")
 
         css_str = [line.strip() for line in css_str if line != ""]

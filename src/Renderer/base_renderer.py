@@ -58,7 +58,7 @@ class RendererBase:
             "debug": pygame.font.SysFont("monospace", 28),
         }
 
-        self.ui: UI = UI((self._win_width, self._win_height))
+        self.ui: UI = UI((self._win_width, self._win_height), "src/UI/")
         self.bind_buttons()
 
 

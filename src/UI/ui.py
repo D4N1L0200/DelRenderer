@@ -2,11 +2,12 @@ import pygame
 from UI.parser import Parser
 from UI.content import Block, Button
 from typing import Callable
+from pathlib import Path
 
 
 class UI:
-    def __init__(self, screen_size: tuple[int, int]) -> None:
-        self.path: str = "main.html"
+    def __init__(self, screen_size: tuple[int, int], path: str = "UI/") -> None:
+        self.layout_path: Path = Path.cwd() / path / "layout"
         self.blocks: dict[str, Block] = {}
         self.screen_size: tuple[int, int] = screen_size
         self.bound_buttons: dict[str, Callable] = {}
@@ -20,7 +21,7 @@ class UI:
             block.update_pos(self.screen_size)
 
     def reload(self) -> None:
-        self.blocks = Parser.parse(self.path)
+        self.blocks = Parser.parse(self.layout_path)
         self.update_blocks(self.screen_size)
         for path, callback in self.bound_buttons.items():
             self.bind_button(path, callback)
