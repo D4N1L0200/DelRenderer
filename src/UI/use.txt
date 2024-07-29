@@ -1,0 +1,16 @@
+# Just to know how to import and use UI
+
+from UI.ui import UI
+
+def __init__(self, starting_width: int, starting_height: int) -> None:
+    self.ui: UI = UI((starting_width, starting_height))
+
+def _resize(self, new_width: int, new_height: int) -> None:
+    self.ui.update_blocks((new_width, new_height))
+
+def _mouse_pressed(self, pos: tuple[int, int], button: int) -> None:
+    if not self.ui.press(pos, button):
+        (if the click was not caught by the UI)
+
+def _draw_ui(self) -> None:
+    self.ui.draw(self._window, self.fonts["default"])

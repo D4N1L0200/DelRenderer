@@ -1,10 +1,10 @@
-from Renderer.ui.content import Block, Button
+from UI.content import Block, Button
 from pathlib import Path
 from typing import Any
 
 
 class Parser:
-    data_path: Path = Path.cwd() / "src" / "Renderer" / "data" / "ui"
+    layout_path: Path = Path.cwd() / "src" / "UI" / "layout"
 
     @staticmethod
     def merge_default(default: dict, override: dict) -> dict:
@@ -62,7 +62,7 @@ class Parser:
 
     @staticmethod
     def parse(path: str) -> dict[str, Block]:
-        with open(Parser.data_path / path, "r") as file:
+        with open(Parser.layout_path / path, "r") as file:
             html: str = file.read()
 
         html = html.replace("\n", "")
@@ -219,7 +219,7 @@ class Parser:
 
     @staticmethod
     def parse_css(path: str) -> dict:
-        with open(Parser.data_path / path, "r") as file:
+        with open(Parser.layout_path / path, "r") as file:
             css_str: list[str] = file.read().split("\n")
 
         css_str = [line.strip() for line in css_str if line != ""]

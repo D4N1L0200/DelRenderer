@@ -2,7 +2,7 @@ import time
 import pygame
 import numpy
 
-from Renderer.ui.ui import UI
+from UI.ui import UI
 
 
 class SetupOptions:

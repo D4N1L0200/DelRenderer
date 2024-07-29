@@ -1,6 +1,6 @@
 import pygame
-from Renderer.ui.parser import Parser
-from Renderer.ui.content import Block, Button
+from UI.parser import Parser
+from UI.content import Block, Button
 from typing import Callable
 
 
