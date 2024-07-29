@@ -12,7 +12,6 @@ class Button:
         border_width: int,
         border_radius: int,
         text: str,
-        callback: Callable,
     ) -> None:
         self.pos: tuple[int, int] = (0, 0)
         self.size: tuple[int, int] = (0, 0)
@@ -23,7 +22,7 @@ class Button:
         self.border_width: int = border_width
         self.border_radius: int = border_radius
         self.text: str = text
-        self.callback: Callable = callback
+        self.callback: Callable = lambda: None
         self.is_held: dict[int, bool] = {
             pygame.BUTTON_LEFT: False,
             pygame.BUTTON_MIDDLE: False,
@@ -41,8 +40,7 @@ class Button:
 
     def end_click(self, button: int) -> None:
         if self.is_held[pygame.BUTTON_LEFT]:
-            # self.callback() # TODO: FIX CALLBACK
-            eval(self.callback)
+            self.callback()
             self.is_held[pygame.BUTTON_LEFT] = False
 
 
@@ -71,7 +69,7 @@ class Block:
         self.border_color: pygame.Color = pygame.Color(border_color)
         self.border_width: int = border_width
         self.border_radius: int = border_radius
-        self.buttons: list[Button] = []
+        self.buttons: dict[str, Button] = {}
 
     def update_pos(self, screen_size: tuple[int, int]) -> None:
         size: tuple[int, int] = self.get_size()
@@ -88,8 +86,9 @@ class Block:
             ),
         )
 
-        for idx, button in enumerate(self.buttons):
-            self.buttons[idx] = self.update_button(button, idx)
+        for idx, button_n_id in enumerate(self.buttons.items()):
+            button_id, button = button_n_id
+            self.buttons[button_id] = self.update_button(button, idx)
 
     def update_button(self, button: Button, idx: int) -> Button:
         button.pos = (self.pos[0] + self.padding, self.pos[1] + self.padding)
@@ -129,9 +128,9 @@ class Block:
             and self.pos[1] <= pos[1] <= self.pos[1] + size[1]
         )
 
-    def add_button(self, button: Button) -> None:
+    def add_button(self, button: Button, button_id: str) -> None:
         button = self.update_button(button, len(self.buttons))
-        self.buttons.append(button)
+        self.buttons[button_id] = button
 
     def get_buttons(self) -> list[Button]:
-        return self.buttons
+        return list(self.buttons.values())

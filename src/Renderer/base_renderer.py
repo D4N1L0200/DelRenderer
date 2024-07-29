@@ -59,6 +59,8 @@ class RendererBase:
         }
 
         self.ui: UI = UI((self._win_width, self._win_height))
+        self.bind_buttons()
+
 
     def _resize(self, width: int, height: int) -> None:
         self._win_width = width
@@ -117,6 +119,8 @@ class RendererBase:
                 self._mouse_buttons[2] = False
 
             self.mouse_released(pos, button)
+            
+    def bind_buttons(self) -> None: ...
 
     def _toggle_debug(self) -> None: ...
     def update(self, dt: float) -> None: ...

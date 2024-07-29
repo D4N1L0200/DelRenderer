@@ -61,7 +61,7 @@ class Parser:
         return tags
 
     @staticmethod
-    def parse(path: str) -> list[Block]:
+    def parse(path: str) -> dict[str, Block]:
         with open(Parser.data_path / path, "r") as file:
             html: str = file.read()
 
@@ -130,12 +130,25 @@ class Parser:
             )
 
             for idx, button_tag in enumerate(button_tags):
+                button_id: str = "-1"
                 try:
-                    button_css: dict = block_css["button"][f":nth({idx})"]
+                    button_id = button_tag["id"]
                 except KeyError:
-                    button_css = {}
+                    pass
 
-                button_css = Parser.merge_default(css["*button"], button_css)
+                try:
+                    button_css_nth: dict = block_css["button"][f":nth({idx})"]
+                except KeyError:
+                    button_css_nth = {}
+
+                button_css = Parser.merge_default(css["*button"], button_css_nth)
+
+                try:
+                    button_css_id: dict = block_css["button"][f"#{button_id}"]
+                except KeyError:
+                    button_css_id = {}
+
+                button_css = Parser.merge_default(button_css, button_css_id)
 
                 background_color = button_css["background-color"]
                 text_color = button_css["color"]
@@ -152,14 +165,13 @@ class Parser:
                     border_width,
                     border_radius,
                     button_tag["content"],
-                    button_tag["onclick"],
                 )
 
-                block.add_button(button)
+                block.add_button(button, button_id)
 
             blocks[block_id] = block
 
-        return list(blocks.values())
+        return blocks
 
     @staticmethod
     def parse_block(css_str: list[str], idx: int) -> tuple[dict, int]:
@@ -174,7 +186,14 @@ class Parser:
 
         while "}" not in css_str[idx]:
             if css_str[idx].startswith("button") and "{" in css_str[idx]:
-                button_idx: str = css_str[idx].split(":nth(")[1].split(") {")[0].strip()
+                if ":nth(" in css_str[idx]:
+                    button_idx: str = (
+                        css_str[idx].split(":nth(")[1].split(") {")[0].strip()
+                    )
+                    block_id: str = ""
+                elif "#" in css_str[idx]:
+                    block_id = css_str[idx].split("#")[1].split("{")[0].strip()
+                    button_idx = ""
 
                 idx += 1
 
@@ -190,7 +209,10 @@ class Parser:
                 if "button" not in block:
                     block["button"] = {}
 
-                block["button"][f":nth({button_idx})"] = button
+                if button_idx:
+                    block["button"][f":nth({button_idx})"] = button
+                elif block_id:
+                    block["button"][f"#{block_id}"] = button
 
             idx += 1
         return block, idx
@@ -201,6 +223,11 @@ class Parser:
             css_str: list[str] = file.read().split("\n")
 
         css_str = [line.strip() for line in css_str if line != ""]
+
+        while "/*" in css_str:
+            start = css_str.index("/*")
+            end = css_str.index("*/")
+            css_str = css_str[:start] + css_str[end + 2 :]
 
         css: dict = {"block": {}, "*block": {}, "*button": {}}
 

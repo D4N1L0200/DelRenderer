@@ -29,17 +29,25 @@ class DelRend3D(Renderer3D):
         options.set_title("DelRenderer 3D")
         super().__init__(options)
 
+    def spawn_random(self, amount: int = 100) -> None:
+        for _ in range(amount):
+            pos: tuple[float, float, float] = (
+                self._camera.focus[0] + random() * 20 - 10,
+                self._camera.focus[1] + random() * 20 - 10,
+                self._camera.focus[2] + random() * 20 - 10,
+            )
+            self.create_object("cube", pos)
+
+    def bind_buttons(self) -> None:
+        self.ui.bind_button("main/debug", self._toggle_debug)
+        self.ui.bind_button("main/random", self.spawn_random)
+        self.ui.bind_button("main/reload", self.ui.reload)
+
     def key_pressed(self, key: int, mod: int, unicode: str, scancode: int) -> None:
         super().key_pressed(key, mod, unicode, scancode)
 
         if key == pg.K_F2:
-            for _ in range(100):
-                pos: tuple[float, float, float] = (
-                    self._camera.focus[0] + random() * 20 - 10,
-                    self._camera.focus[1] + random() * 20 - 10,
-                    self._camera.focus[2] + random() * 20 - 10,
-                )
-                self.create_object("cube", pos)
+            self.spawn_random()
         if key == pg.K_F5:
             self.ui.reload()
 
